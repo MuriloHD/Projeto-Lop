@@ -1,0 +1,86 @@
+// Mova seu mouse na janela ao lado
+// para ver o processing em ação
+
+var xo=100,yo = 130, xd, yd, disparo = false,vidas,pontos,colisãov = false,raioj = 15,raioO = 20,raiod = 5,colisaod = false 
+function setup() {
+  createCanvas(400, 400);
+}
+ x = 300
+  y = 50
+  vidas = 100
+  pontos = 0
+function draw() {
+ 
+  if (keyIsDown(UP_ARROW)) {
+    y = y - 20;
+  }
+  if (keyIsDown(DOWN_ARROW)) {
+    y = y + 20;
+  }
+   if (keyIsDown(LEFT_ARROW)) {
+    x = x - 20;
+  }
+   if (keyIsDown(RIGHT_ARROW)) {
+    x = x + 20;
+  }
+  clear();
+  background(0)
+  fill(255, 0, 0)
+  ellipse(x, y, 2*raioj,2*raioj);
+  fill(100, 0, 0)
+  ellipse(xo, yo, 2*raioO,2*raioO);
+  if (xo < 400){
+    xo = xo + 2
+  }
+  else{
+    xo = 0
+  }
+  fill(0, 250, 0)
+   ellipse(xd, yd, 2*raiod,2*raiod);
+  if ( keyIsDown ( CONTROL) && ( ! disparo)) {
+    disparo =  true ;
+    xd = x;
+    yd = y;     
+  }
+  if (disparo) {
+
+    xd = xd + 5
+  if ( dist(xo,yo,xd,yd) < raioO+raiod ) {
+     if ( colisaod == false) { 
+        pontos = pontos + 10     
+       colisaod = true; 
+     }
+ }
+ else {
+    colisaod = false;  
+ }
+    if (xd > width) {
+      disparo =  false ;
+    }
+  }
+   if (x >width){
+    x = 0
+   }
+  if ( x  < 0){
+       x = width
+      }
+  if (y> height){
+    y= 0
+   }
+  if ( y < 0){
+       y= height
+      }
+ 
+  text("Vida " + vidas,10,10);
+  text("Pontuação " + pontos,10,20);
+  
+  if ( dist(x,y,xo,yo) < raioO+raioj ) {
+       vidas = vidas - 1      
+       colisaov = true; 
+     
+ }
+ else {
+    colisaov = false;  
+ }
+
+}
