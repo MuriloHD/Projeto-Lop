@@ -1,0 +1,145 @@
+// alvos
+var vx = []; 
+var vy = [];
+var vdx = []
+var vdy = []
+var vtam = [];
+var qt = 10; 
+var vcorR = []; 
+var vcorG = [];
+var vcorB = [];
+var tamArea;
+//Jogador
+var x = 200
+var y = 400
+var raioj = 15
+var vidas = 100
+var pontos = 0
+// disparo
+var xd
+var yd
+var disparo = false
+raiod = 8
+// colisao
+var colisaov = false
+var colisaop = false
+// nivel
+var nivel = 1
+var barreiradepontos = 1000
+
+function setup() {
+// alvos  
+  frameRate(30);
+  tamArea = 400; 
+  createCanvas(tamArea,tamArea);
+  for ( i = 0; i < qt; i++) { 
+    vx[i] = random(0,tamArea); 
+    vy[i] = random(0,0);
+    vtam[i] = random(5,15);
+    vdx[i] = random(0,0);
+    vdy[i] = random(0,6);
+    vcorR[i] = random(0,255);
+    vcorG[i] = random(0,255);
+    vcorB[i] = random(0,255);
+  }
+// disparo
+xd = x
+yd
+}
+
+function draw() {
+  
+  
+  background(0);
+  // movimentçao do jogador
+  fill(0, 250, 0);
+  ellipse(x, y, 2*raioj,2*raioj)
+   if (keyIsDown(LEFT_ARROW)) {
+    x = x - 20;
+  }
+   if (keyIsDown(RIGHT_ARROW)) {
+    x = x + 20;
+  }
+  if(x < 0){
+    x = 400
+  }
+  if(x> 400){
+    x = 0
+  }
+  
+  
+// criação dos alvos  
+  
+  for ( i = 0; i < qt; i++) {
+    fill(vcorR[i], vcorG[i], vcorB[i]);
+    vx[i] = vx[i] + vdx[i];
+    vy[i] = vy[i] + vdy[i]; 
+    if ( vx[i] > width || vx[i] < 0 ) {
+        
+       vcorR[i] = random(0,255);
+       vcorG[i] = random(0,255);
+       vcorB[i] = random(0,255);
+    }
+    if ( vy[i] > height || vy[i] < 0 ) {
+       vy[i] = 0; 
+      
+    }
+    
+    ellipse(vx[i],vy[i],vtam[i],vtam[i]); 
+  }
+ 
+  
+  
+
+// disparo 
+if (keyIsDown(CONTROL) && (! disparo) ){ 
+    disparo = true; 
+    xd = x;
+    yd = y;    
+}
+ if(disparo){
+   yd = yd - 6
+ }
+    if (yd < 0) {
+       disparo = false; 
+    }
+  if (disparo) {
+    fill(0, 250, 0)
+    ellipse(xd,yd,raiod,raiod);
+  
+  }
+ // colisao
+ text("Vida " + vidas,10,10);
+  text("Pontuação " + pontos,10,20);
+
+  for ( i = 0; i < qt; i++){
+  if ( dist(x,y,vx[i],vy[i]) < vtam[i]+raioj ) {
+       vidas = vidas - 1      
+       colisaov = true; 
+     
+ }
+ else {
+    colisaov = false;  
+ }
+} 
+  for ( i = 0; i < qt; i++){ 
+   if ( dist(vx[i],vy[i],xd,yd) < vtam[i]+raiod ) {
+     if ( colisaop == false) { 
+        pontos = pontos + 10     
+       colisaop = true; 
+     }
+ }
+ else {
+    colisaop = false;  
+ }
+} 
+
+// niveis
+  text("Nivel " + nivel,10,30)
+     
+ 
+   if(pontos > barreiradepontos){
+     nivel = nivel + 1
+     barreiradepontos = barreiradepontos + 1000
+   } 
+}
