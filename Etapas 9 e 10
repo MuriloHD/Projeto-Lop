@@ -1,0 +1,238 @@
+// alvos
+var vx = []; 
+var vy = [];
+var vdx = []
+var vdy = []
+var vtam = [];
+var qt = 10; 
+var vcorR = []; 
+var vcorG = [];
+var vcorB = [];
+var tamArea;
+//Jogador
+var x = 200
+var y = 370
+var raioj = 15
+var vidas = 100
+var pontos = 0
+// disparo
+var xd
+var yd
+var disparo = false
+raiod = 8
+// colisao
+var colisaov = false
+var colisaop = false
+// nivel
+var nivel = 1
+var barreiradepontos = 500
+// imagens
+  //imagem do fundo
+  var imgf 
+  var imgf2
+  var imgf3
+  // imagem do jogador
+  var imgj
+  var imgjesq
+  var imgjdir
+  var T
+  var imgdisp
+  var imgalvos  
+  // imgens fim de jogo/win game
+  var imgfinal
+  var imgwin
+  // imagens de inicio de jogo
+  var imginic
+// telas
+var t = 1
+  
+
+function preload(){
+   imgf = loadImage('Fundo.png');
+   imgf2 = loadImage('Fundo2.png');
+   imgf3 = loadImage('Fundo3.png')
+   imgj = loadImage('ship2.png');
+   imgjesq = loadImage('ship0.png');
+   imgjdir = loadImage('ship4.png');
+   imgdisp = loadImage('shotbig.png');
+   imgalvos = loadImage('asteroid.png');
+   imgfinal = loadImage('GameOver.png');
+   imgwin = loadImage('Win.png');
+   imginic = loadImage('come.png')
+}
+
+function setup() {
+// alvos  
+  frameRate(30);
+  tamArea = 400; 
+  createCanvas(tamArea,tamArea);
+  for ( i = 0; i < qt; i++) { 
+    vx[i] = random(0,tamArea); 
+    vy[i] = random(0,0);
+    vtam[i] = random(20,40);
+    vdx[i] = random(0,0);
+    vdy[i] = random(0,6);
+    vcorR[i] = random(0,255);
+    vcorG[i] = random(0,255);
+    vcorB[i] = random(0,255);
+  }
+// disparo
+xd = x
+yd
+}
+
+function draw() {
+  // tela de preload
+   if( t == 1){
+    background(imgf)
+     image(imginic,0,200)
+     if(keyIsDown(ENTER)){
+       t = 2
+     }
+   }
+   if(t == 3){
+  background(imgf3)
+   image(imgfinal,0,100)
+   text('Press ENTER to play again',100,200)
+  if(keyIsDown(ENTER)){
+       t = 2
+     }
+     vidas = 100
+     pontos = 0
+     nivel = 1
+}
+  if(t == 4){
+    background(imgwin)
+    text('you win ' ,100,100)
+    text('press enter to play again',100,110) 
+    text('Creditos(arte):Aleksander Kowalczyk, Retrocade.net',100,120)
+    if(keyIsDown(ENTER)){
+       t = 2
+     }
+}
+  
+ if(t == 2){ 
+  // cenario
+  
+    background(imgf2);
+    
+ 
+  // movimentçao do jogador
+  
+  
+  image(imgj,x,y)
+   T = imgj
+  if (keyIsDown(LEFT_ARROW)) {
+    
+    imgj = imgjesq
+    x = x - 20;
+  }
+   if (keyIsDown(RIGHT_ARROW)) {
+    imgj = imgjdir 
+     x = x + 20;
+  }
+  imgj = T
+  if(x < 0){
+    x = 400
+  }
+  if(x> 400){
+    x = 0
+  }
+  
+  
+// criação dos alvos  
+     
+  for ( i = 0; i < qt; i++) {
+    fill(vcorR[i], vcorG[i], vcorB[i]);
+       if(nivel == 2){
+      
+       vdy[i] = random(2,8);
+    }
+      if(nivel == 3){
+      
+       vdy[i] = random(5,10);
+    }
+      if(nivel == 4){
+      
+       vdy[i] = random(8,10);
+    }
+      if(nivel == 5){
+      
+       vdy[i] = random(10,12);
+    }
+
+      vx[i] = vx[i] + vdx[i];
+      vy[i] = vy[i] + vdy[i]; 
+    if ( vx[i] > width || vx[i] < 0 ) {
+        
+       vcorR[i] = random(0,255);
+       vcorG[i] = random(0,255);
+       vcorB[i] = random(0,255);
+    }
+    if ( vy[i] > height || vy[i] < 0 ) {
+       vy[i] = 0; 
+      
+    }
+    image(imgalvos,vx[i],vy[i])
+    
+  }
+ 
+  
+  
+
+// disparo 
+if (keyIsDown(CONTROL) && (! disparo) ){ 
+    disparo = true; 
+    xd = x;
+    yd = y;    
+}
+ if(disparo){
+   yd = yd - 50
+ }
+    if (yd < 0) {
+       disparo = false; 
+    }
+  if (disparo) {
+    //fill(0, 250, 0)
+    //ellipse(xd,yd,raiod,raiod);
+  image(imgdisp,xd,yd)
+  }
+ // colisao
+ text("Vida " + vidas,10,10);
+  text("Pontuação " + pontos,10,20);
+
+  for ( i = 0; i < qt; i++){
+  if ( dist(x,y,vx[i],vy[i]) < vtam[i]+raioj ) {
+       vidas = vidas - 1      
+       colisaov = true; 
+     
+ }
+ else {
+    colisaov = false;  
+ }
+
+} 
+for ( i = 0; i < qt; i++){ 
+   if ( dist(vx[i],vy[i],xd,yd) < vtam[i]+raiod ) {
+        pontos = pontos + 10     
+        vx[i] = random(0,tamArea); 
+        vy[i] = random(0,0);
+   }
+} 
+
+// niveis
+  text("Nivel " + nivel,10,30)
+     
+ 
+   if(pontos > barreiradepontos){
+     nivel = nivel + 1
+     barreiradepontos = barreiradepontos + 500
+   } 
+ if(vidas < 0) {
+   t = 3
+ }
+ if(nivel == 6){
+   t = 4
+ }
+}
+}
